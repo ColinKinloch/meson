@@ -1860,6 +1860,52 @@ class GnomeModule(ExtensionModule):
             }
             return (GType) gtype_id;
             }'''))
+
+        # TODO: Don't generate for GFlags
+        c_cmd.append('--vtail')
+        c_cmd.append(textwrap.dedent(
+            f'''
+            static G@Type@Value *
+            {func_prefix}@enum_name@_get_@type@_value (@EnumName@ value)
+            {{
+              G@Type@Value *ev = NULL;
+              GObjectClass *unref_class = NULL;
+              GObjectClass *class = g_type_class_peek_static (@ENUMPREFIX@_TYPE_@ENUMSHORT@);
+
+              if (class == NULL)
+                class = unref_class = g_type_class_ref (@ENUMPREFIX@_TYPE_@ENUMSHORT@);
+
+              if (class != NULL) {{
+                ev = g_@type@_get_value (G_@TYPE@_CLASS (class), value);
+              }}
+
+              if (unref_class != NULL)
+                g_type_class_unref (unref_class);
+
+              return ev;
+            }}
+
+            const gchar *
+            {func_prefix}@enum_name@_get_value_name (@EnumName@ value) {{
+              const char* value_name = NULL;
+              G@Type@Value *ev = {func_prefix}@enum_name@_get_@type@_value(value);
+
+              if (ev != NULL)
+                value_name = ev->value_name;
+
+              return value_name;
+            }}
+            const gchar *
+            {func_prefix}@enum_name@_get_value_nick (@EnumName@ value) {{
+              const char* value_nick = NULL;
+              G@Type@Value *ev = {func_prefix}@enum_name@_get_@type@_value(value);
+
+              if (ev != NULL)
+                value_nick = ev->value_nick;
+
+              return value_nick;
+            }}'''))
+
         c_cmd.append('@INPUT@')
 
         c_file = self._make_mkenum_impl(state, kwargs['sources'], body_filename, c_cmd)
@@ -1881,6 +1927,7 @@ class GnomeModule(ExtensionModule):
         h_cmd.append(textwrap.dedent(
             '''
             /* enumerations from "@basename@" */
+            #include "@basename@"
             '''))
 
         h_cmd.append('--vhead')
@@ -1888,7 +1935,11 @@ class GnomeModule(ExtensionModule):
             f'''
             {decl_decorator}
             GType {func_prefix}@enum_name@_get_type (void);
-            #define @ENUMPREFIX@_TYPE_@ENUMSHORT@ ({func_prefix}@enum_name@_get_type())'''))
+            #define @ENUMPREFIX@_TYPE_@ENUMSHORT@ ({func_prefix}@enum_name@_get_type())
+            {decl_decorator}
+            const gchar * {func_prefix}@enum_name@_get_value_name (@EnumName@ value);
+            {decl_decorator}
+            const gchar * {func_prefix}@enum_name@_get_value_nick (@EnumName@ value);'''))
 
         h_cmd.append('--ftail')
         h_cmd.append(textwrap.dedent(

@@ -632,7 +632,8 @@ def run_test(test: TestDef,
             finally:
                 mlog.shutdown() # Close the log file because otherwise Windows wets itself.
     finally:
-        mesonlib.windows_proof_rmtree(build_dir)
+        pass
+        #//mesonlib.windows_proof_rmtree(build_dir)
 
 def _run_test(test: TestDef,
               test_build_dir: str,
@@ -740,8 +741,8 @@ def _run_test(test: TestDef,
 
     # Clean with subprocess
     env = test.env.copy()
-    pi, o, e = Popen_safe(clean_commands + dir_args, cwd=test_build_dir, env=env)
-    testresult.add_step(BuildStep.clean, o, e)
+    #pi, o, e = Popen_safe(clean_commands + dir_args, cwd=test_build_dir, env=env)
+    #testresult.add_step(BuildStep.clean, o, e)
     if pi.returncode != 0:
         testresult.fail('Running clean failed.')
         return testresult

@@ -23,6 +23,14 @@ int main(int argc, char **argv) {
         fprintf(stderr, "Get MESON_THE_FIRST_VALUE by nick failed.\n");
         return 4;
     }
+    if (g_strcmp0(_meson_the_xenum_get_value_name(MESON_THE_XVALUE), "MESON_THE_XVALUE")) {
+        fprintf(stderr, "Get MESON_THE_XVALUE name failed.\n");
+        return 5;
+    }
+    if (g_strcmp0(_meson_the_xenum_get_value_nick(MESON_THE_XVALUE), "the-xvalue")) {
+        fprintf(stderr, "Get MESON_THE_XVALUE nick failed.\n");
+        return 6;
+    }
 
     /* Make sure that funcs do not have any extra prefix */
     if (!meson_the_xenum_get_type())

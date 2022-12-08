@@ -23,6 +23,22 @@ int main(int argc, char **argv) {
         fprintf(stderr, "Get MESON_THE_FIRST_VALUE by nick failed.\n");
         return 4;
     }
+    if (g_strcmp0(_meson_the_xenum_get_value_name(MESON_THE_XVALUE), "MESON_THE_XVALUE")) {
+        fprintf(stderr, "Get MESON_THE_XVALUE name failed.\n");
+        return 5;
+    }
+    if (g_strcmp0(_meson_the_xenum_get_value_nick(MESON_THE_XVALUE), "the-xvalue")) {
+        fprintf(stderr, "Get MESON_THE_XVALUE nick failed.\n");
+        return 6;
+    }
+    if (g_strcmp0(_meson_the_flags_enum_get_value_name(MESON_THE_FIRST_VALUE), "MESON_THE_FIRST_VALUE")) {
+        fprintf(stderr, "Get MESON_THE_FIRST_VALUE name failed.\n");
+        return 7;
+    }
+    if (g_strcmp0(_meson_the_flags_enum_get_value_nick(MESON_THE_FIRST_VALUE), "the-first-value")) {
+        fprintf(stderr, "Get MESON_THE_FIRST_VALUE nick failed.\n");
+        return 8;
+    }
 
     /* Make sure that funcs are generated with leading underscore as requested */
     if (!_meson_the_xenum_get_type())
